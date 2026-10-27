@@ -1,4 +1,4 @@
-/* TreasuryIQ prototype. All data below is fictional sample data (Halden Foods Group). */
+/* ---------- pdf file datas imported ---------- */
 const $ = (s) => document.querySelector(s),
   f = (n) => Math.round(n).toLocaleString("en-US"),
   usd = (n) => "$" + f(n);
@@ -10,12 +10,10 @@ const money = (n) =>
 const ic = (p) =>
   `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
 
-/* ---------- Data from the group workbook: Aqua Defense Construction Inc. (amounts in pesos) ---------- */
 const php = (n) => "₱" + money(n),
   phK = (n) => "₱" + f(n),
   ASOF = "2026-09-08";
 const L = [
-  // date, description, category, cash in, cash out
   [
     "2026-08-01",
     "Borja, Dayao and Torres Jr. each invest ₱1,000,000",
