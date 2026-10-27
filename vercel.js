@@ -1,3 +1,3 @@
 {
-  "rewrites"; [{ "source": "/", "destination": "/TreasuryIQ.html" }]
+  "rewrites": [{ "source": "/", "destination": "/TreasuryIQ.html" }]
 }
