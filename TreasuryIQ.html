@@ -14,10 +14,9 @@
   <aside class="rail">
     <div class="mark">€</div>
     <nav id="nav" aria-label="Main"></nav>
-    <div class="rail-b" aria-hidden="true">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><circle cx="12" cy="12" r="2.6"/></svg>
-      <svg class="out" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4H5v16h5M16 8l4 4-4 4M20 12H9"/></svg>
-      <div class="av">H</div>
+    <div class="rail-b">
+      <a class="ico" id="gear" href="#settings" data-tip="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><circle cx="12" cy="12" r="2.6"/></svg></a>
+      <div class="av" aria-hidden="true">T</div>
     </div>
   </aside>
   <main>
@@ -30,14 +29,16 @@
     </header>
     <div class="strip">
       <span><i class="dot"></i><b>LIVE</b></span>
-      <span>Build v1.0 demo</span>
-      <span>Aqua Defense Construction Inc.</span>
-      <span>Group activity data, in pesos</span>
+      <span id="co">TreasuryIQ</span>
+      <span id="mode"></span>
       <button class="share" id="share" onclick="share(this)"></button>
     </div>
     <section id="view"></section>
   </main>
 </div>
+<div id="toast" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
 <script src="app.js" defer></script>
 </body>
 </html>

@@ -1,14 +1,19 @@
 :root {
-    --bg: #0a0b0d;
-    --card: #0e1014;
-    --card2: #13161b;
-    --line: #1c1f26;
-    --ink: #f2f4f7;
-    --mut: #8a909b;
-    --g: #7bf08e;
-    --b: #5ea1f5;
-    --w: #f0b84a;
-    --r: #ff6b6b
+    --bg: #F4F6F8;
+    --card: #FFFFFF;
+    --card2: #F4F6F8;
+    --line: #E6EBF1;
+    --line2: #D7DEE8;
+    --line3: #C7D0DB;
+    --ink: #16223f;
+    --mut: #5b6880;
+    --g: #00c98d;
+    --gt: #00775a;
+    --b: #3d5fb5;
+    --b2: #6d9cff;
+    --w: #f5b301;
+    --r: #ff4a1c;
+    --navy: #1f2e54
 }
 
 * {
@@ -27,7 +32,9 @@ body {
 }
 
 button,
-a {
+a,
+input,
+select {
     font: inherit;
     color: inherit
 }
@@ -52,7 +59,8 @@ button {
     position: sticky;
     top: 0;
     height: 100vh;
-    border-right: 1px solid var(--line);
+    background: var(--card);
+    border-right: 1px solid var(--line2);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -61,10 +69,15 @@ button {
 }
 
 .mark {
-    color: #8b7cf6;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--navy);
+    color: #fff;
     font-weight: 700;
-    font-size: 1.308rem;
-    margin: 2px 0 14px
+    margin: 0 0 14px
 }
 
 #nav {
@@ -77,37 +90,36 @@ button {
     position: relative;
     display: grid;
     place-items: center;
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: 10px;
     color: var(--mut);
     text-decoration: none
 }
 
 .ico:hover {
+    background: var(--card2);
     color: var(--ink)
 }
 
 .ico.on {
-    background: #171a21;
-    color: var(--ink);
-    box-shadow: inset 0 0 0 1px #2a2e37
+    background: var(--navy);
+    color: #fff
 }
 
 .ico:hover::after,
 .ico:focus-visible::after {
     content: attr(data-tip);
     position: absolute;
-    left: 42px;
+    left: 44px;
     top: 50%;
     transform: translateY(-50%);
-    background: #1a1d24;
-    border: 1px solid #2a2e37;
+    background: var(--navy);
     border-radius: 8px;
     padding: 4px 10px;
     white-space: nowrap;
-    font-size: 0.923rem;
-    color: var(--ink);
+    font-size: .92rem;
+    color: #fff;
     z-index: 9
 }
 
@@ -116,23 +128,23 @@ button {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 14px;
+    gap: 10px;
     color: var(--mut)
 }
 
 .rail-b .out {
-    color: #ff6b57
+    color: var(--r)
 }
 
 .av {
     width: 30px;
     height: 30px;
     border-radius: 8px;
-    background: #2b3140;
+    background: var(--line2);
     color: var(--ink);
     display: grid;
     place-items: center;
-    font-size: 0.923rem;
+    font-size: .92rem;
     font-weight: 600
 }
 
@@ -150,12 +162,12 @@ main {
 
 h1 {
     font-size: 1.385rem;
-    font-weight: 600
+    font-weight: 650
 }
 
 .top small {
     color: var(--mut);
-    font-size: 0.923rem
+    font-size: .92rem
 }
 
 .tr {
@@ -167,11 +179,11 @@ h1 {
 .live {
     display: inline-flex;
     align-items: center;
-    border: 1px solid #23272e;
+    border: 1px solid var(--line2);
     background: var(--card);
     border-radius: 99px;
     padding: 7px 16px;
-    font-size: 0.885rem;
+    font-size: .88rem;
     font-weight: 500
 }
 
@@ -181,7 +193,7 @@ h1 {
     height: 7px;
     border-radius: 50%;
     background: var(--g);
-    box-shadow: 0 0 6px var(--g);
+    box-shadow: 0 0 0 3px #00c98d33;
     margin-right: 8px
 }
 
@@ -189,10 +201,10 @@ h1 {
     position: relative;
     display: grid;
     place-items: center;
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    border: 1px solid #23272e;
+    border: 1px solid var(--line2);
     background: var(--card);
     color: var(--mut)
 }
@@ -200,8 +212,8 @@ h1 {
 .bell::after {
     content: "";
     position: absolute;
-    top: 3px;
-    right: 3px;
+    top: 4px;
+    right: 4px;
     width: 7px;
     height: 7px;
     border-radius: 50%;
@@ -214,12 +226,12 @@ h1 {
     gap: 20px;
     flex-wrap: wrap;
     background: var(--card);
-    border: 1px solid var(--line);
+    border: 1px solid var(--line2);
     border-radius: 12px;
     padding: 7px 10px 7px 14px;
     margin-bottom: 12px;
     color: var(--mut);
-    font-size: 0.923rem
+    font-size: .92rem
 }
 
 .strip b {
@@ -236,10 +248,9 @@ h1 {
     gap: 8px;
     margin-left: auto;
     background: var(--card2);
-    border: 1px solid #2a2e37;
+    border: 1px solid var(--line3);
     border-radius: 10px;
     padding: 7px 16px;
-    color: var(--ink);
     font-weight: 500
 }
 
@@ -271,26 +282,27 @@ h1 {
 .card {
     overflow-x: auto;
     background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
+    border: 1px solid var(--line2);
+    border-radius: 14px;
     padding: 14px 16px;
-    min-width: 0
+    min-width: 0;
+    box-shadow: 0 1px 2px #16223f0a
 }
 
 .h {
     font-weight: 600;
-    font-size: 1.077rem
+    font-size: 1.08rem
 }
 
 .lbl,
 .sub {
     color: var(--mut);
-    font-size: 0.923rem
+    font-size: .92rem
 }
 
 .big {
-    font-size: 1.846rem;
-    font-weight: 600;
+    font-size: 1.85rem;
+    font-weight: 650;
     letter-spacing: -.3px;
     margin: 4px 0 2px
 }
@@ -310,7 +322,7 @@ h1 {
 
 .cur .hl,
 .cur .hl b {
-    color: var(--g)
+    color: var(--gt)
 }
 
 .lines {
@@ -318,7 +330,7 @@ h1 {
     display: grid;
     gap: 5px;
     color: var(--mut);
-    font-size: 0.923rem
+    font-size: .92rem
 }
 
 .row {
@@ -331,7 +343,7 @@ h1 {
 .tabs {
     display: inline-flex;
     background: var(--card2);
-    border: 1px solid #22262d;
+    border: 1px solid var(--line2);
     border-radius: 99px;
     padding: 3px
 }
@@ -342,25 +354,26 @@ h1 {
     padding: 6px 16px;
     border-radius: 99px;
     color: var(--mut);
-    font-size: 0.962rem
+    font-size: .96rem
 }
 
 .tabs button.on {
-    background: #232832;
-    color: var(--ink)
+    background: var(--navy);
+    color: #fff
 }
 
 .leg {
     display: flex;
     gap: 18px;
     margin: 12px 0 4px;
-    font-size: 0.962rem
+    font-size: .96rem
 }
 
-.leg i {
+.leg i,
+.lg i {
     display: inline-block;
-    width: 8px;
-    height: 8px;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
     margin-right: 7px
 }
@@ -376,33 +389,59 @@ h1 {
     font-size: 10.5px
 }
 
-.seg {
+.dn {
     display: flex;
-    gap: 3px;
-    margin: 10px 0 6px
+    align-items: center;
+    gap: 16px;
+    margin-top: 8px;
+    flex-wrap: wrap
 }
 
-.seg i {
-    flex: 1;
-    height: 24px;
-    border-radius: 2px;
-    background: #1a1d23
+.donut {
+    width: clamp(110px, 9vw, 150px);
+    height: auto;
+    flex: none
 }
 
-.seg i.on {
-    background: var(--g)
+.donut .dv {
+    font-size: 19px;
+    font-weight: 650;
+    fill: var(--ink)
 }
 
-.seg i.bl {
-    background: var(--b)
+.donut .dl {
+    font-size: 8.5px;
+    fill: var(--mut)
 }
 
-.seg i.wn {
-    background: var(--w)
+.lg {
+    display: grid;
+    gap: 7px;
+    font-size: .92rem;
+    min-width: 150px;
+    flex: 1
+}
+
+.lg .row {
+    gap: 14px
+}
+
+.rings {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    text-align: center;
+    margin-top: 10px
+}
+
+.rings .donut {
+    width: 100%;
+    max-width: 130px
 }
 
 table {
     width: 100%;
+    min-width: max-content;
     border-collapse: collapse
 }
 
@@ -410,16 +449,16 @@ th {
     text-align: left;
     font-weight: 500;
     color: var(--mut);
-    font-size: 0.846rem;
+    font-size: .85rem;
     letter-spacing: .05em;
     text-transform: uppercase;
     padding: 9px 6px
 }
 
 td {
-    padding: 12px 6px;
-    border-top: 1px solid #15181e;
-    font-size: 1.000rem
+    padding: 11px 6px;
+    border-top: 1px solid var(--line);
+    font-size: 1rem
 }
 
 .n {
@@ -427,49 +466,45 @@ td {
     font-variant-numeric: tabular-nums
 }
 
-.hi td {
-    color: var(--g)
-}
-
 .pill {
     display: inline-block;
     padding: 3px 11px;
     border-radius: 99px;
-    font-size: 0.808rem;
+    font-size: .8rem;
     font-weight: 600;
-    letter-spacing: .06em;
+    letter-spacing: .05em;
     text-transform: uppercase;
-    border: 1px solid #23272e;
+    border: 1px solid var(--line2);
     color: var(--mut)
 }
 
 .p-g {
-    color: var(--g);
-    background: #0f2016;
-    border-color: #17321f
+    color: var(--gt);
+    background: #e3f7ee;
+    border-color: #bfead7
 }
 
 .p-b {
-    color: var(--b);
-    background: #0e1a2b;
-    border-color: #183052
+    color: #2f4c99;
+    background: #e8eefb;
+    border-color: #c9d7f5
 }
 
 .p-w {
-    color: var(--w);
-    background: #261e0e;
-    border-color: #43331a
+    color: #8a5d00;
+    background: #fff4d6;
+    border-color: #f5deaa
 }
 
 .p-r {
-    color: var(--r);
-    background: #2a1212;
-    border-color: #491f1f
+    color: #b8300f;
+    background: #ffe9e3;
+    border-color: #ffcabd
 }
 
 .btn {
-    background: var(--card2);
-    border: 1px solid #2a2e37;
+    background: var(--card);
+    border: 1px solid var(--line3);
     border-radius: 10px;
     padding: 6px 14px;
     text-decoration: none;
@@ -477,25 +512,44 @@ td {
 }
 
 .btn:hover {
-    background: #1b2028
+    background: var(--card2)
 }
 
 .btn.pri {
-    background: var(--g);
-    color: #06210d;
-    border-color: var(--g);
+    background: var(--navy);
+    color: #fff;
+    border-color: var(--navy);
     font-weight: 600
 }
 
+.btn.pri:hover {
+    background: #2a3d6c
+}
+
+.x {
+    border: 0;
+    background: none;
+    color: var(--mut);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 1.1rem
+}
+
+.x:hover {
+    background: #ffe9e3;
+    color: #b8300f
+}
+
 .ok {
-    color: var(--g);
-    font-size: 0.923rem
+    color: var(--gt);
+    font-size: .92rem;
+    font-weight: 500
 }
 
 .link {
     color: var(--b);
     text-decoration: none;
-    font-size: 0.962rem
+    font-size: .96rem
 }
 
 .mt {
@@ -503,19 +557,19 @@ td {
 }
 
 .callout {
-    border: 1px solid #17332f;
-    background: #0c1b1b;
+    border: 1px solid #bfe8da;
+    background: #e8f7f2;
     border-radius: 10px;
     padding: 10px 12px;
-    color: #9fe3d6;
-    font-size: 0.962rem;
+    color: #00634a;
+    font-size: .96rem;
     margin-top: 12px
 }
 
 .callout.bad {
-    border-color: #4a2020;
-    background: #221010;
-    color: #ffb0b0
+    border-color: #ffcabd;
+    background: #ffece7;
+    color: #a82a0c
 }
 
 .flow {
@@ -536,8 +590,8 @@ td {
 
 .step b {
     display: block;
-    color: var(--g);
-    font-size: 0.923rem;
+    color: var(--gt);
+    font-size: .92rem;
     margin-bottom: 2px
 }
 
@@ -549,7 +603,7 @@ td {
 
 .step p {
     color: var(--mut);
-    font-size: 0.923rem;
+    font-size: .92rem;
     margin-top: 4px
 }
 
@@ -560,7 +614,7 @@ td {
 }
 
 .trio div {
-    border-left: 2px solid var(--b);
+    border-left: 3px solid var(--b2);
     padding-left: 12px
 }
 
@@ -568,34 +622,61 @@ td {
     display: block;
     color: var(--mut);
     font-weight: 500;
-    font-size: 0.923rem
-}
-
-ol.j {
-    padding-left: 18px;
-    color: var(--mut);
-    margin-top: 10px
-}
-
-ol.j li {
-    margin: 6px 0
-}
-
-ol.j b {
-    color: var(--ink);
-    font-weight: 500
+    font-size: .92rem
 }
 
 input[type=range] {
     width: 100%;
-    accent-color: var(--g);
+    accent-color: var(--navy);
     margin: 10px 0
+}
+
+.frm {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: end;
+    margin-top: 12px
+}
+
+.frm label {
+    display: grid;
+    gap: 3px;
+    font-size: .85rem;
+    color: var(--mut)
+}
+
+.frm .grow {
+    flex: 1;
+    min-width: 12rem
+}
+
+input,
+select {
+    background: var(--card);
+    border: 1px solid var(--line3);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: .96rem;
+    color: var(--ink);
+    min-width: 0
+}
+
+input[type=number] {
+    width: 9rem
+}
+
+td input[type=number] {
+    width: 7.5rem;
+    text-align: right;
+    padding: 5px 8px
 }
 
 .sm td,
 .sm th {
     padding: 9px 4px;
-    font-size: 0.923rem
+    font-size: .92rem;
+    white-space: nowrap
 }
 
 .sc {
@@ -610,15 +691,24 @@ input[type=range] {
     background: var(--card)
 }
 
-.sm td,
-.sm th,
-.hi td {
-    white-space: nowrap
+.empty {
+    color: var(--mut);
+    padding: 14px 0;
+    text-align: center
 }
 
-table {
-    min-width: max-content;
-    width: 100%
+#toast {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    max-width: 24rem;
+    background: var(--navy);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: .92rem;
+    display: none;
+    z-index: 20
 }
 
 @media(max-width:1000px) {
@@ -639,7 +729,7 @@ table {
         height: auto;
         flex-direction: row;
         border-right: 0;
-        border-bottom: 1px solid var(--line);
+        border-bottom: 1px solid var(--line2);
         padding: 8px 10px;
         overflow-x: auto
     }
@@ -653,7 +743,8 @@ table {
     }
 
     .rail-b {
-        display: none
+        flex-direction: row;
+        margin: 0 0 0 auto
     }
 
     .ico:hover::after {
