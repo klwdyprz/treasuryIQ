@@ -1,0 +1,6 @@
+/* Paste your Supabase project values here (Project Settings > API).
+   Leave both empty to run in demo mode, where data is saved only in this browser. */
+window.TIQ_CONFIG = {
+  SUPABASE_URL: "",
+  SUPABASE_ANON_KEY: ""
+};
