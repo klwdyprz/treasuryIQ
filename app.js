@@ -1311,15 +1311,61 @@ function showAuth(mode = authMode) {
     ip = INFOPG[mode];
   a.hidden = false;
   const logo =
-    '<svg viewBox="0 0 64 56" width="64" height="56" aria-hidden="true"><circle cx="40" cy="20" r="16" fill="#aeb3bd"/><circle cx="26" cy="32" r="18" fill="#0b63c8"/><text x="26" y="39" text-anchor="middle" font-size="20" font-weight="700" fill="#fff" font-family="Fira Sans,sans-serif">€</text></svg>';
+    '<svg viewBox="0 0 64 56" width="64" height="56" aria-hidden="true"><circle cx="40" cy="20" r="16" fill="#aeb3bd"/><circle cx="26" cy="32" r="18" fill="#0b63c8"/><text x="26" y="39" text-anchor="middle" font-size="20" font-weight="700" fill="#fff" font-family="Fira Sans,sans-serif">₱</text></svg>';
+  const fL = su
+      ? pf(
+          "last",
+          "Enter Last Name",
+          "text",
+          'required autocomplete="family-name"',
+        ) +
+        pf(
+          "first",
+          "Enter First Name",
+          "text",
+          'required autocomplete="given-name"',
+        ) +
+        pf(
+          "mi",
+          "Enter Middle Initial",
+          "text",
+          'maxlength="2" autocomplete="additional-name"',
+        )
+      : "",
+    fE = rs
+      ? ""
+      : pf(
+          "email",
+          "Enter Email",
+          "email",
+          'required autocomplete="email"',
+          "mail",
+        ),
+    fP = pf(
+      "password",
+      rs ? "Enter New Password" : "Enter Password",
+      "password",
+      `required minlength="6" autocomplete="${su || rs ? "new-password" : "current-password"}"`,
+      su || rs ? "eye" : "lock",
+    ),
+    fC =
+      su || rs
+        ? pf(
+            "confirm",
+            "Re-enter Password",
+            "password",
+            'required minlength="6" autocomplete="new-password"',
+            "eye",
+          )
+        : "",
+    fields = su
+      ? `<div class="col">${fL}</div><div class="col">${fE}${fP}${fC}</div>`
+      : fE + fP + fC;
   const body = ip
     ? `<h1>${ip[0]}</h1><p class="ainfo">${ip[1]}</p><button class="abtn" onclick="showAuth('login')">Back to log in</button>`
     : `<h1>${rs ? "Set a New Password" : su ? "Create Account" : "Log in to your Account"}</h1>
  <form class="aform ${su ? "two" : ""}" onsubmit="authSubmit(event)">
- ${su ? pf("last", "Enter Last Name", "text", 'required autocomplete="family-name"') + pf("first", "Enter First Name", "text", 'required autocomplete="given-name"') + pf("mi", "Enter Middle Initial", "text", 'maxlength="2" autocomplete="additional-name"') : ""}
- ${rs ? "" : pf("email", "Enter Email", "email", 'required autocomplete="email"', "mail")}
- ${pf("password", rs ? "Enter New Password" : "Enter Password", "password", `required minlength="6" autocomplete="${su || rs ? "new-password" : "current-password"}"`, su || rs ? "eye" : "lock")}
- ${su || rs ? pf("confirm", "Re-enter Password", "password", 'required minlength="6" autocomplete="new-password"', "eye") : ""}
+ ${fields}
  <div id="authmsg" class="authmsg" role="alert" aria-live="polite"></div>
  <button class="abtn">${rs ? "Update Password" : su ? "Sign Up" : "Log In"}</button></form>
  ${mode == "login" ? '<button class="alink" onclick="forgot()">Forgot Password?</button>' : ""}`;
