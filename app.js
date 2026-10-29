@@ -1,3 +1,4 @@
+/* TreasuryIQ. Data lives in Supabase when config.js has keys, otherwise in this browser (demo mode). */
 const $ = (s) => document.querySelector(s),
   f = (n) => Math.round(n).toLocaleString("en-US");
 const money = (n) =>
@@ -55,6 +56,9 @@ const cfg = window.TIQ_CONFIG || {},
     cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY && window.supabase
       ? window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY)
       : null;
+let USER = null,
+  authMode = "login",
+  recovering = false;
 const T = [
   "transactions",
   "forecast",
@@ -88,6 +92,11 @@ async function load() {
     } catch (e) {}
     return;
   }
+  const {
+    data: { session },
+  } = await sb.auth.getSession();
+  USER = session ? session.user : null;
+  if (!USER) return;
   for (const t of T) {
     const { data, error } = await sb.from(t).select("*");
     if (error) note("Database error (" + t + "): " + error.message);
@@ -1214,9 +1223,9 @@ async function doWipe() {
 }
 function settings() {
   const s = D.settings;
-  return `<div class="stack"><div class="card"><div class="h">Company and policy</div>
+  return `<div class="stack">${USER ? `<div class="card"><div class="h">Account</div><p class="mt">Signed in as <b>${esc(USER.email)}</b></p><div class="frm"><button class="btn" onclick="logout()">Log out</button></div></div>` : ""}<div class="card"><div class="h">Company and policy</div>
  <form class="frm" onsubmit="saveSettings(event)">${inp("company", "Company name", "text", `value="${esc(s.company)}"`, "grow")}${inp("beginning_cash", "Beginning cash balance (₱)", "number", `step="0.01" value="${num(s.beginning_cash)}"`)}${inp("min_cash", "Minimum cash balance (₱)", "number", `step="0.01" min="0" value="${num(s.min_cash)}"`)}<button class="btn pri">Save</button></form></div>
- <div class="card"><div class="h">Database</div><p class="mt">${sb ? "Connected to Supabase. Everyone using this site shares the same data." : "Demo mode. Data is saved only in this browser. To share it, add your Supabase URL and anon key to config.js."}</p>
+ <div class="card"><div class="h">Database</div><p class="mt">${sb ? "Connected to Supabase. Everyone with an account shares the same data." : "Demo mode. Data is saved only in this browser. To share it, add your Supabase URL and anon key to config.js."}</p>
  <div class="frm"><button class="btn" onclick="doSeed()">Load sample data</button><button class="btn" onclick="doWipe()">Delete all data</button></div></div></div>`;
 }
 
@@ -1254,12 +1263,177 @@ function go() {
     link("overview", "Treasury Overview", GRID) +
     ORDER.map((k) => link(k, INFO[k].n, INFO[k].ic)).join("");
   $("#gear").classList.toggle("on", id == "settings");
+  $("#logout").hidden = !USER;
+  $("#av").textContent = ((USER &&
+    (USER.user_metadata.full_name || USER.email)) ||
+    "T")[0].toUpperCase();
+  $("#av").title = USER ? USER.email : "";
   document.title = name + " | TreasuryIQ";
 }
+/* ---------- Accounts (Supabase Auth) ---------- */
+const AI = {
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+  lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',
+  off: '<path d="M3 3l18 18M10.6 6.2A9.8 9.8 0 0112 6c5 0 8.5 4 9.5 6a14 14 0 01-3.2 3.8M6.5 7.6A14 14 0 002.5 12c1 2 4.5 6 9.5 6 1.5 0 2.8-.3 4-.9"/>',
+  on: '<path d="M2.5 12C3.5 10 7 6 12 6s8.5 4 9.5 6c-1 2-4.5 6-9.5 6s-8.5-4-9.5-6z"/><circle cx="12" cy="12" r="2.6"/>',
+};
+const asvg = (p) =>
+  `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const pf = (n, ph, t = "text", x = "", icon = "") =>
+  `<div class="pf"><input name="${n}" type="${t}" placeholder="${ph}" aria-label="${ph}" ${x}>${icon == "eye" ? `<button type="button" class="eye" onclick="eye(this)" aria-label="Show password">${asvg(AI.off)}</button>` : icon ? `<span>${asvg(AI[icon])}</span>` : ""}</div>`;
+function eye(b) {
+  const i = b.parentNode.querySelector("input"),
+    show = i.type == "password";
+  i.type = show ? "text" : "password";
+  b.innerHTML = asvg(show ? AI.on : AI.off);
+  b.setAttribute("aria-label", show ? "Hide password" : "Show password");
+}
+const INFOPG = {
+  about: [
+    "About TreasuryIQ",
+    "TreasuryIQ is a treasury management prototype built for a school project. It brings six treasury functions into one place: cash visibility, payments, forecasting, risk monitoring, reconciliation, and reporting.",
+  ],
+  faq: [
+    "FAQ",
+    "Who can see the data? Only people with an account, and everyone who is signed in shares the same company data. How do I reset my password? Use Forgot Password on the log in page and we email you a reset link. Where is the data stored? In a Supabase database.",
+  ],
+  credits: [
+    "Credits",
+    "TreasuryIQ was built for the Treasury and Management project. Sign-in and data storage are powered by Supabase, and the site is hosted on Vercel.",
+  ],
+};
+function showAuth(mode = authMode) {
+  if (!INFOPG[mode]) authMode = mode;
+  document.querySelector(".frame").hidden = true;
+  const a = $("#auth"),
+    su = mode == "signup",
+    rs = mode == "reset",
+    ip = INFOPG[mode];
+  a.hidden = false;
+  const logo =
+    '<svg viewBox="0 0 64 56" width="64" height="56" aria-hidden="true"><circle cx="40" cy="20" r="16" fill="#aeb3bd"/><circle cx="26" cy="32" r="18" fill="#0b63c8"/><text x="26" y="39" text-anchor="middle" font-size="20" font-weight="700" fill="#fff" font-family="Fira Sans,sans-serif">€</text></svg>';
+  const body = ip
+    ? `<h1>${ip[0]}</h1><p class="ainfo">${ip[1]}</p><button class="abtn" onclick="showAuth('login')">Back to log in</button>`
+    : `<h1>${rs ? "Set a New Password" : su ? "Create Account" : "Log in to your Account"}</h1>
+ <form class="aform ${su ? "two" : ""}" onsubmit="authSubmit(event)">
+ ${su ? pf("last", "Enter Last Name", "text", 'required autocomplete="family-name"') + pf("first", "Enter First Name", "text", 'required autocomplete="given-name"') + pf("mi", "Enter Middle Initial", "text", 'maxlength="2" autocomplete="additional-name"') : ""}
+ ${rs ? "" : pf("email", "Enter Email", "email", 'required autocomplete="email"', "mail")}
+ ${pf("password", rs ? "Enter New Password" : "Enter Password", "password", `required minlength="6" autocomplete="${su || rs ? "new-password" : "current-password"}"`, su || rs ? "eye" : "lock")}
+ ${su || rs ? pf("confirm", "Re-enter Password", "password", 'required minlength="6" autocomplete="new-password"', "eye") : ""}
+ <div id="authmsg" class="authmsg" role="alert" aria-live="polite"></div>
+ <button class="abtn">${rs ? "Update Password" : su ? "Sign Up" : "Log In"}</button></form>
+ ${mode == "login" ? '<button class="alink" onclick="forgot()">Forgot Password?</button>' : ""}`;
+  a.innerHTML = `<div class="atop"><a href="#" onclick="showAuth('login');return false">Home</a><a href="#" onclick="showAuth('credits');return false">Credits</a>${rs ? "" : `<button class="apill" onclick="showAuth('${su ? "login" : "signup"}')">${su ? "Sign In" : "Sign Up"}</button>`}</div>
+ <div class="amain">${logo}${body}</div>
+ <div class="afoot"><span><a href="#" onclick="showAuth('about');return false">About Us</a><a href="#" onclick="showAuth('faq');return false">FAQ</a></span><span>© ${new Date().getFullYear()} - TreasuryIQ - Treasury management prototype</span></div>`;
+  if (!sb && !ip)
+    $("#authmsg").textContent =
+      "Preview only. Add your Supabase keys in config.js to turn on real accounts.";
+}
+const say = (t, bad = 1) => {
+  const m = $("#authmsg");
+  m.textContent = t;
+  m.className = "authmsg " + (bad ? "bad" : "good");
+};
+async function doAuth(v) {
+  if (!sb)
+    return say(
+      "Preview only. Add your Supabase keys in config.js to turn on real accounts.",
+    );
+  if (authMode == "reset") {
+    if (v.password !== v.confirm) return say("Passwords do not match.");
+    const { error } = await sb.auth.updateUser({ password: v.password });
+    if (error) return say(error.message);
+    recovering = false;
+    return render();
+  }
+  if (authMode == "signup") {
+    if (v.password !== v.confirm) return say("Passwords do not match.");
+    const { data, error } = await sb.auth.signUp({
+      email: v.email,
+      password: v.password,
+      options: {
+        data: {
+          full_name: [v.first, v.mi ? v.mi.replace(/\.?$/, ".") : "", v.last]
+            .filter(Boolean)
+            .join(" "),
+          first_name: v.first,
+          last_name: v.last,
+          middle_initial: v.mi || "",
+        },
+      },
+    });
+    if (error) return say(error.message);
+    if (!data.session)
+      say(
+        "Account created. Check your email for a confirmation link, then log in.",
+        0,
+      );
+  } else {
+    const { error } = await sb.auth.signInWithPassword({
+      email: v.email,
+      password: v.password,
+    });
+    if (error) say(error.message);
+  }
+}
+async function authSubmit(e) {
+  const v = F(e),
+    b = e.target.querySelector("button");
+  b.disabled = true;
+  await doAuth(v);
+  b.disabled = false;
+}
+async function forgot() {
+  if (!sb)
+    return say(
+      "Preview only. Add your Supabase keys in config.js to turn on real accounts.",
+    );
+  const em = document.querySelector("#auth input[name=email]").value;
+  if (!em) return say("Type your email above first.");
+  const { error } = await sb.auth.resetPasswordForEmail(em, {
+    redirectTo: location.origin + location.pathname,
+  });
+  error
+    ? say(error.message)
+    : say("Password reset link sent. Check your email.", 0);
+}
+async function logout() {
+  if (sb) await sb.auth.signOut();
+}
+function render() {
+  const pv = !sb && /^#(login|signup)$/.test(location.hash);
+  if (recovering) {
+    showAuth("reset");
+    return;
+  }
+  if (pv || (sb && !USER)) {
+    showAuth(pv && location.hash == "#signup" ? "signup" : authMode);
+    return;
+  }
+  $("#auth").hidden = true;
+  document.querySelector(".frame").hidden = false;
+  go();
+}
+if (sb)
+  sb.auth.onAuthStateChange(async (ev, ses) => {
+    const u = ses ? ses.user : null;
+    if (ev == "PASSWORD_RECOVERY") {
+      USER = u;
+      recovering = true;
+      return render();
+    }
+    if ((u && !USER) || (!u && USER)) {
+      USER = u;
+      if (u) await load();
+      else T.forEach((t) => (D[t] = []));
+      render();
+    }
+  });
 $("#share").innerHTML = SH;
 window.addEventListener("hashchange", () => {
-  go();
+  render();
   window.scrollTo(0, 0);
 });
 $("#view").innerHTML = '<div class="card">Loading data…</div>';
-load().then(go);
+load().then(render);

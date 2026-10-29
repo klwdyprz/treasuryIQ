@@ -6,17 +6,18 @@
 <title>Treasury Overview | TreasuryIQ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fira+Sans:wght@400;500;600;700&family=Fira+Sans+Condensed:wght@700;800&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="frame">
   <aside class="rail">
-    <div class="mark">€</div>
+    <div class="mark">₱</div>
     <nav id="nav" aria-label="Main"></nav>
     <div class="rail-b">
       <a class="ico" id="gear" href="#settings" data-tip="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><circle cx="12" cy="12" r="2.6"/></svg></a>
-      <div class="av" aria-hidden="true">T</div>
+      <button class="ico" id="logout" onclick="logout()" data-tip="Log out" aria-label="Log out" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4H5v16h5M16 8l4 4-4 4M20 12H9"/></svg></button>
+      <div class="av" id="av" aria-hidden="true">T</div>
     </div>
   </aside>
   <main>
@@ -36,6 +37,7 @@
     <section id="view"></section>
   </main>
 </div>
+<div id="auth" hidden></div>
 <div id="toast" role="status"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>

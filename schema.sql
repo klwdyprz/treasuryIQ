@@ -37,12 +37,12 @@ create table if not exists bank_items (
   date date not null, description text, amount numeric not null
 );
 
--- Open access for the anon key, so anyone with the site link can read and edit.
--- Fine for a class demo. For real use, add Supabase Auth and tighten these policies.
+-- Only signed-in users (Supabase Auth) can read or edit. Safe to re-run on an existing database.
 do $$ declare t text; begin
   foreach t in array array['settings','transactions','forecast','loans','investments','payments','bank_items'] loop
     execute format('alter table %I enable row level security', t);
     execute format('drop policy if exists open_access on %I', t);
-    execute format('create policy open_access on %I for all to anon using (true) with check (true)', t);
+    execute format('drop policy if exists auth_access on %I', t);
+    execute format('create policy auth_access on %I for all to authenticated using (true) with check (true)', t);
   end loop;
 end $$;
